@@ -58,3 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Sublimer project and workspace file
+*.sublime-project
+*.sublime-workspace
