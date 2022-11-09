@@ -11,8 +11,8 @@ public class Agent : MonoBehaviour
     public static float collide_radius = 0.5f; // 碰撞半径（不允许其他 agent 和障碍物进入）
                                                // 【注】目前没有用到
 
-    public float view_angle; // 视野角度
-    public float view_distance; // 视野距离
+    public float view_angle = 135; // 视野角度（速度方向和边界方向的夹角）
+    public float view_distance = 10; // 视野距离
     public float max_accelerate; // 最大加速度
     public float max_velocity; // 最大速度
 
@@ -53,7 +53,9 @@ public class Agent : MonoBehaviour
         accelerate = BoidsModel.instance.CalcAccelerate(this, neighbour_list);
 
         // 【测试】远离地面
-        accelerate.y += transform.position.y <= collide_radius ? 1f/Mathf.Abs(transform.position.y) : 0f;
+        // accelerate.y += transform.position.y <= collide_radius ? 1f/Mathf.Abs(transform.position.y) : 0f;
+
+        
 
         // 限制加速度大小
         accelerate = Vector3.ClampMagnitude(accelerate, max_accelerate);
@@ -61,7 +63,7 @@ public class Agent : MonoBehaviour
         // 用加速度更新速度
         if (accelerate.magnitude > 0) {
             velocity = velocity + accelerate * delta_time; // 计算新的速度
-            velocity = Vector3.ClampMagnitude(velocity, max_velocity);
+            velocity = Vector3.ClampMagnitude(velocity, max_velocity); // 限制速度大小
         }
         // 用速度更新坐标
         if (velocity.magnitude > 0) { // 参考代码判断了是否大于 0：推测是为了避免 LookAt 出现意外情况
@@ -83,14 +85,14 @@ public class Agent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // Debug.Log("Spawn agent");
     }
 
     // Update is called once per frame
     void Update()
     {
         // 将 time_scale 为 0 作为模拟暂停，不执行 if 中的代码，节省计算资源
-        if (Mathf.Abs(AgentManager.instance.time_scale) > MyMath.PRECISION) {
+        if (!AgentManager.instance.IsTimeStop()) {
             float delta_time = Time.deltaTime * AgentManager.instance.time_scale; // 经过的时间
             SimulateStep(delta_time);
         }

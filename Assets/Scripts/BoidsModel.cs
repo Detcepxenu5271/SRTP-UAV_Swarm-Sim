@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoidsModel : MonoBehaviour
 {
-    public static BoidsModel instance; // 单例模式
+    public static BoidsModel instance = null; // 单例模式
 
     // 乘数因子
     public float total_factor;

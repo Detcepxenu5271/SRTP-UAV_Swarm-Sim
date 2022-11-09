@@ -61,3 +61,6 @@ crashlytics-build.properties
 # Sublimer project and workspace file
 *.sublime-project
 *.sublime-workspace
+
+# VSCode
+.vscode

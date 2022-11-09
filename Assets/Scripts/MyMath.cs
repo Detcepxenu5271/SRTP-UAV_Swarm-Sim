@@ -8,7 +8,7 @@ using UnityEngine;
  * 使用方法：MyMath.instance.要调用的函数() */
 public class MyMath : MonoBehaviour
 {
-    public static MyMath instance; // 单例模式
+    public static MyMath instance = null; // 单例模式
 
     public const float PRECISION = 0.000001f; // 1e-6
 

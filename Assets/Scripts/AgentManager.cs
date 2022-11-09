@@ -1,43 +1,51 @@
 using System; // Math
 using System.Collections;
-using System.Collections.Generic; // ¸ÃÃüÃû¿Õ¼äÏÂÓĞ List<T>
+using System.Collections.Generic; // è¯¥å‘½åç©ºé—´ä¸‹æœ‰ List<T>
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-/** agent ¹ÜÀíÆ÷
- * Ëù¹ÒÔØµÄÓÎÏ·ÎïÌå£ºAgentManager
- * ÃèÊö£ºÓÃÓÚ¹ÜÀí agent ÁĞ±í£¬ÊµÏÖ agent µÄ³õÊ¼»¯ºÍÏú»Ù£¬ÒÔ¼°»ùÓÚÊ±¼äµÄÄ£Äâ */
+/** agent ç®¡ç†å™¨
+ * æ‰€æŒ‚è½½çš„æ¸¸æˆç‰©ä½“ï¼šAgentManager
+ * æè¿°ï¼šç”¨äºç®¡ç† agent åˆ—è¡¨ï¼Œå®ç° agent çš„åˆå§‹åŒ–å’Œé”€æ¯ï¼Œä»¥åŠåŸºäºæ—¶é—´çš„æ¨¡æ‹Ÿ */
 public class AgentManager : MonoBehaviour
 {
-    public static AgentManager instance; // µ¥ÀıÄ£Ê½
+    public static AgentManager instance = null; // å•ä¾‹æ¨¡å¼
 
-    // ¹«ÓĞ²ÎÊı
-    public GameObject agent_prefab; // agent Ô¤ÖÆ¼ş
+    public GameObject agent_prefab; // agent é¢„åˆ¶ä»¶
 
-    public int agent_count; // µ±Ç°ÒªÉú³ÉµÄ agent ÊıÁ¿
-    public float time_scale; // ËÙ¶ÈËõ·ÅÖµ£¬Ó°Ïì Agent ÖĞÃ¿²½¸üĞÂµÄ delta time
+    public int agent_count = 50; // å½“å‰è¦ç”Ÿæˆçš„ agent æ•°é‡ï¼Œåªç”¨äºåˆæ¬¡ç”Ÿæˆï¼Œä¸ç”¨äºè®°å½•å½“å‰ agent æ•°é‡
 
-    // ÉèÖÃ³õÊ¼×ø±ê/ËÙ¶È
-    private int spawn_cnt; // Éú³Éµ½µÚ¼¸¸ö agent ÁË£¨´Ó 0 ¿ªÊ¼£©
+    public void SetAgentCount_Str(string ac_string)  {agent_count = Convert.ToInt32(ac_string);}
+
+    public float time_scale; // é€Ÿåº¦ç¼©æ”¾å€¼ï¼Œå½±å“ Agent ä¸­æ¯æ­¥æ›´æ–°çš„ delta time
+    public float step_interval = 0.02f; // å•æ­¥æ¨¡æ‹Ÿçš„æ—¶é—´é—´éš”
+    public int step_times = 1; // å•æ­¥æ¨¡æ‹Ÿçš„æ¬¡æ•°
+
+    public void SetTimeScale(float ts) {time_scale = ts;}
+    public void SetStepTimes_Str(string st_string) {step_times = Convert.ToInt32(st_string);}
+    public bool IsTimeStop() {return Mathf.Abs(AgentManager.instance.time_scale) < MyMath.PRECISION;}
+
+    // è®¾ç½®åˆå§‹åæ ‡/é€Ÿåº¦
+    private int spawn_cnt; // ç”Ÿæˆåˆ°ç¬¬å‡ ä¸ª agent äº†ï¼ˆä» 0 å¼€å§‹ï¼‰
     
-    public bool is_init_position; // ÊÇ·ñÊÖ¶¯ÉèÖÃ³õÊ¼×ø±ê
-    public List<Vector3> init_position; // ³õÊ¼×ø±ê
-    public float random_position_range_x; // Ëæ»úÉú³É×ø±êÊ±µÄ x ÖáËæ»ú·¶Î§Îª [-rand.._x, rand.._x]£¬ÏÂÍ¬
+    public bool is_init_position; // æ˜¯å¦æ‰‹åŠ¨è®¾ç½®åˆå§‹åæ ‡
+    public List<Vector3> init_position; // åˆå§‹åæ ‡
+    public float random_position_range_x; // éšæœºç”Ÿæˆåæ ‡æ—¶çš„ x è½´éšæœºèŒƒå›´ä¸º [-rand.._x, rand.._x]ï¼Œä¸‹åŒ
     public float random_position_range_y;
     public float random_position_range_z;
 
-    public bool is_init_velocity; // ÊÇ·ñÊÖ¶¯ÉèÖÃ³õÊ¼ËÙ¶È
-    public List<Vector3> init_velocity; // ³õÊ¼ËÙ¶È
-    public float random_phi_lower_bound; // Ëæ»úÉú³É³õÊ¼ËÙ¶ÈµÄ×î´ó¸©½Ç£¬½Ç¶È±íÊ¾
-    public float random_phi_upper_bound; // Ëæ»úÉú³É³õÊ¼ËÙ¶ÈµÄ×î´óÑö½Ç£¬½Ç¶È±íÊ¾
-    public float random_velocity_bound; // Ëæ»úÉú³É³õÊ¼ËÙ¶È£¬´óĞ¡Îª [0, ran...bound]
+    public bool is_init_velocity; // æ˜¯å¦æ‰‹åŠ¨è®¾ç½®åˆå§‹é€Ÿåº¦
+    public List<Vector3> init_velocity; // åˆå§‹é€Ÿåº¦
+    public float random_phi_lower_bound; // éšæœºç”Ÿæˆåˆå§‹é€Ÿåº¦çš„æœ€å¤§ä¿¯è§’ï¼Œè§’åº¦è¡¨ç¤º
+    public float random_phi_upper_bound; // éšæœºç”Ÿæˆåˆå§‹é€Ÿåº¦çš„æœ€å¤§ä»°è§’ï¼Œè§’åº¦è¡¨ç¤º
+    public float random_velocity_bound; // éšæœºç”Ÿæˆåˆå§‹é€Ÿåº¦ï¼Œå¤§å°ä¸º [0, ran...bound]
 
-    // agent ÁĞ±í
-    private List<Agent> agent_list; // agent ÁĞ±í£¬´æ´¢ Agent ÓÎÏ·ÎïÌåÏÂ¹ÒÔØµÄ½Å±¾¶¨ÒåµÄ Agent ¶ÔÏó
+    // agent åˆ—è¡¨
+    private List<Agent> agent_list; // agent åˆ—è¡¨ï¼Œå­˜å‚¨ Agent æ¸¸æˆç‰©ä½“ä¸‹æŒ‚è½½çš„è„šæœ¬å®šä¹‰çš„ Agent å¯¹è±¡
 
-    /** ÔÚ³õÊ¼»¯ Agent ÁĞ±íÊ±£¬Éú³É Agent µÄ×ø±ê */
+    /** åœ¨åˆå§‹åŒ– Agent åˆ—è¡¨æ—¶ï¼Œç”Ÿæˆ Agent çš„åæ ‡ */
     public Vector3 GeneratePosition() {
-        if (!is_init_position) { // ²»ÊÖ¶¯ÉèÖÃ³õÊ¼×ø±ê£¬ÔòËæ»úÉú³É
+        if (!is_init_position) { // ä¸æ‰‹åŠ¨è®¾ç½®åˆå§‹åæ ‡ï¼Œåˆ™éšæœºç”Ÿæˆ
             float x = Random.Range(-random_position_range_x, random_position_range_x);
             float y = Random.Range(Agent.collide_radius, random_position_range_y);
             float z = Random.Range(-random_position_range_z, random_position_range_z);
@@ -47,14 +55,14 @@ public class AgentManager : MonoBehaviour
             return init_position[spawn_cnt];
         }
     }
-    /** ÔÚ³õÊ¼»¯ Agent ÁĞ±íÊ±£¬Éú³É Agent µÄËÙ¶È */
+    /** åœ¨åˆå§‹åŒ– Agent åˆ—è¡¨æ—¶ï¼Œç”Ÿæˆ Agent çš„é€Ÿåº¦ */
     public Vector3 GenerateVelocity() {
-        if (!is_init_velocity) { // ²»ÊÖ¶¯ÉèÖÃ³õÊ¼×ø±ê£¬ÔòËæ»úÉú³ÉÈ«ÏòµÄËÙ¶È
-            float lower = MyMath.instance.DegreeToRadian(random_phi_lower_bound); // ½Ç¶È×ª»¡¶È
+        if (!is_init_velocity) { // ä¸æ‰‹åŠ¨è®¾ç½®åˆå§‹åæ ‡ï¼Œåˆ™éšæœºç”Ÿæˆå…¨å‘çš„é€Ÿåº¦
+            float lower = MyMath.instance.DegreeToRadian(random_phi_lower_bound); // è§’åº¦è½¬å¼§åº¦
             float upper = MyMath.instance.DegreeToRadian(random_phi_upper_bound);
-            float phi = Random.Range(Mathf.PI/2f + lower, Mathf.PI/2f - upper); // ËÙ¶ÈºÍ y Öá¼Ğ½Ç ¦Õ
-            float theta = Random.Range(0, 2f*Mathf.PI); // ËÙ¶ÈÔÚ xz Æ½ÃæÍ¶Ó°ºÍ x Öá¼Ğ½Ç ¦È£¬[0, 2¦Ğ]
-            float magnitude = Random.Range(0, random_velocity_bound); // ËÙ¶È´óĞ¡
+            float phi = Random.Range(Mathf.PI/2f + lower, Mathf.PI/2f - upper); // é€Ÿåº¦å’Œ y è½´å¤¹è§’ Ï†
+            float theta = Random.Range(0, 2f*Mathf.PI); // é€Ÿåº¦åœ¨ xz å¹³é¢æŠ•å½±å’Œ x è½´å¤¹è§’ Î¸ï¼Œ[0, 2Ï€]
+            float magnitude = Random.Range(0, random_velocity_bound); // é€Ÿåº¦å¤§å°
             // Debug.Log("generate random velocity: " + phi*180/Mathf.PI + ", " + theta*180/Mathf.PI);
             return MyMath.instance.VelocityAngleToVector(phi, theta) * magnitude;
         } else {
@@ -62,30 +70,41 @@ public class AgentManager : MonoBehaviour
         }
     }
 
-    /** Éú³É Agent
-     * ÃèÊö£º¸ù¾İ ´«ÈëµÄ count ÊıÁ¿»òµ±Ç° agent_count£¬ÔÚ SimRoom ³¡¾°ÖĞÉú³ÉÖÇÄÜÌå
-     *       Èç¹û´«ÈëÁË³õÊ¼×ø±ê List£¬ÔòÊÖ¶¯ÉèÖÃ³õÊ¼×ø±ê£¬·ñÔòËæ»úÉú³É[TODO] */
+    /** ç”Ÿæˆ Agent
+     * æè¿°ï¼šæ ¹æ® ä¼ å…¥çš„ count æ•°é‡æˆ–å½“å‰ agent_countï¼Œåœ¨ SimRoom åœºæ™¯ä¸­ç”Ÿæˆæ™ºèƒ½ä½“
+     *       å¦‚æœä¼ å…¥äº†åˆå§‹åæ ‡ Listï¼Œåˆ™æ‰‹åŠ¨è®¾ç½®åˆå§‹åæ ‡ï¼Œå¦åˆ™éšæœºç”Ÿæˆ[TODO] */
     public void SpawnAgent(int count = 0) {
-        if (count > 0) { // µ±´«Èë´óÓÚ 0 µÄ count Ê±£¬½« agent_count ÉèÎª´«ÈëµÄÖµ
+        if (count > 0) { // å½“ä¼ å…¥å¤§äº 0 çš„ count æ—¶ï¼Œå°† agent_count è®¾ä¸ºä¼ å…¥çš„å€¼
             agent_count = count;
         }
-        // Çå³ıÔ­ÓĞµÄ agent
+        // æ¸…é™¤åŸæœ‰çš„ agent
         if (agent_list.Count > 0) {
             foreach (Agent a in agent_list) {
-                Destroy(a.gameObject); // Ïú»Ù½Å±¾Ëù¹ÒÔØµÄÓÎÏ·ÎïÌå
+                Destroy(a.gameObject); // é”€æ¯è„šæœ¬æ‰€æŒ‚è½½çš„æ¸¸æˆç‰©ä½“
             }
-            agent_list.Clear(); // Çå¿ÕÁĞ±íÔªËØ
+            agent_list.Clear(); // æ¸…ç©ºåˆ—è¡¨å…ƒç´ 
         }
-        // ÒÀ´ÎÉú³É agent_count ¸ö agent
+        // ä¾æ¬¡ç”Ÿæˆ agent_count ä¸ª agent
         spawn_cnt = 0;
         for (int i = 0; i < agent_count; ++i) {
-            GameObject agent_obj = Instantiate(agent_prefab); // ¸ù¾İÔ¤ÖÆ¼ş´´½¨Ò»¸ö agent ÓÎÏ·ÎïÌå
-            Agent agent = agent_obj.GetComponent<Agent>(); // »ñÈ¡ agent ÓÎÏ·ÎïÌå¹ÒÔØµÄµÄ½Å±¾£¨Agent Àà£©
-            // ÉèÖÃ¼ÓËÙ¶È£¬Ä¬ÈÏÎª 0
+            GameObject agent_obj = Instantiate(agent_prefab); // æ ¹æ®é¢„åˆ¶ä»¶åˆ›å»ºä¸€ä¸ª agent æ¸¸æˆç‰©ä½“
+            Agent agent = agent_obj.GetComponent<Agent>(); // è·å– agent æ¸¸æˆç‰©ä½“æŒ‚è½½çš„çš„è„šæœ¬ï¼ˆAgent ç±»ï¼‰
+            // è®¾ç½®åŠ é€Ÿåº¦ï¼Œé»˜è®¤ä¸º 0
             agent.Accelerate = new Vector3(0f, 0f, 0f);
-            // Ìí¼Ó agent µ½ÁĞ±íÖĞ
+            // æ·»åŠ  agent åˆ°åˆ—è¡¨ä¸­
             agent_list.Add(agent);
             spawn_cnt++;
+        }
+    }
+
+    public void SimulateStep() {
+        if (!IsTimeStop()) { // time_scale > 0
+            time_scale = 0f; // åœæ­¢æŒ‰æ—¶é—´æ¨¡æ‹Ÿ
+        }
+        for (int i = 0; i < step_times; ++i) {
+            foreach (Agent agent in agent_list) {
+                agent.SimulateStep(step_interval);
+            }
         }
     }
 
@@ -106,10 +125,5 @@ public class AgentManager : MonoBehaviour
     void Start() {
         agent_list = new List<Agent>();
         SpawnAgent();
-    }
-
-    // Update is called once per frame
-    void Update() {
-
     }
 }
