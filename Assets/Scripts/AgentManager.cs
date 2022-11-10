@@ -13,13 +13,24 @@ public class AgentManager : MonoBehaviour
 
     public GameObject agent_prefab; // agent 预制件
 
+    /** agent 是否显示拖尾，由 UI 控制 */
+    public void ShowTrail(bool st) {
+        foreach (Agent agent in agent_list) {
+            agent.ShowTrail(st);
+        }
+    }
+
+    // 设置 agent 数量
     public int agent_count = 50; // 当前要生成的 agent 数量，只用于初次生成，不用于记录当前 agent 数量
 
     public void SetAgentCount_Str(string ac_string)  {agent_count = Convert.ToInt32(ac_string);}
 
-    public float time_scale; // 速度缩放值，影响 Agent 中每步更新的 delta time
+    // 设置模拟的时间流速和单步模拟的参数
+    private float time_scale = 1f; // 速度缩放值，影响 Agent 中每步更新的 delta time
     public float step_interval = 0.02f; // 单步模拟的时间间隔
-    public int step_times = 1; // 单步模拟的次数
+    private int step_times = 1; // 单步模拟的次数
+
+    public float TimeScale {get => time_scale;}
 
     public void SetTimeScale(float ts) {time_scale = ts;}
     public void SetStepTimes_Str(string st_string) {step_times = Convert.ToInt32(st_string);}
@@ -97,6 +108,7 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    /** 单步模拟，调用每个 agent 的 SimulateStep */
     public void SimulateStep() {
         if (!IsTimeStop()) { // time_scale > 0
             time_scale = 0f; // 停止按时间模拟
@@ -108,6 +120,7 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    /** 获取某个 agent 的邻居 */
     public void GetNeighbours(Agent agent, List<Agent> neighbour_list) {
          foreach (Agent a in agent_list) {
             if (a != agent
@@ -117,7 +130,7 @@ public class AgentManager : MonoBehaviour
          }
     }
 
-    private void Awake() {
+    void Awake() {
         instance = this;
     }
 

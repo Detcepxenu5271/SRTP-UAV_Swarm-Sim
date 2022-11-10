@@ -13,6 +13,7 @@ public class BoidsModel : MonoBehaviour
     public float alignment_factor;
     public float target_factor;
 
+    // 目标点
     public bool is_use_target;
     public Vector3 target_position;
 
@@ -60,7 +61,8 @@ public class BoidsModel : MonoBehaviour
             dir += reverse_dir.normalized / reverse_dir.magnitude; // 距离越近，分离向量越大
         }
 
-        return dir.normalized; // 返回单位方向向量
+        // return dir.normalized; // 返回单位方向向量
+        return dir; // 返回方向向量
     }
     /** 对齐力 */
     private Vector3 Alignment(Agent agent, List<Agent> neighbour_list) {
@@ -84,8 +86,8 @@ public class BoidsModel : MonoBehaviour
         dir = target_position - agent.Position;
         return dir.normalized; // 返回单位方向向量
     }
-    /** 将各种力结合到一起，计算最终加速度 */
-    public Vector3 CalcAccelerate(Agent agent, List<Agent> neighbour_list) {
+    /** 将各种力结合到一起，计算最终力 */
+    public Vector3 CalcForce(Agent agent, List<Agent> neighbour_list) {
         Vector3 dir = Vector3.zero;
         dir += Cohension(agent, neighbour_list) * cohension_factor;
         dir += Seperation(agent, neighbour_list) * seperation_factor;
@@ -96,7 +98,7 @@ public class BoidsModel : MonoBehaviour
         return dir;
     }
 
-    private void Awake() {
+    void Awake() {
         instance = this;
     }
 }

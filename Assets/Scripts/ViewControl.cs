@@ -20,6 +20,7 @@ public class ViewControl : MonoBehaviour
 
     public GameObject camera_view; // UI 中显示摄像机画面的图像
 
+    /** 鼠标的位置是否在 Camera View 中 */
     private bool MouseInView() {
         if(RectTransformUtility.RectangleContainsScreenPoint(
             camera_view.GetComponent<RectTransform>(),
@@ -39,11 +40,13 @@ public class ViewControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // LShift 键加速
         float speed = camera_move_speed;
         if (Input.GetKey(KeyCode.LeftShift)) {
             speed *= 3f;
         }
 
+        // 在 Camera View 中按住鼠标右键，进入视角旋转模式
         if (Input.GetMouseButtonDown(1) && MouseInView()) {
             camera_state = 1;
         }
@@ -51,6 +54,7 @@ public class ViewControl : MonoBehaviour
             camera_state = 0;
         }
         
+        /** 鼠标控制视角旋转 */
         if (Input.GetMouseButton(1) && camera_state == 1) {
             float mouse_x = Input.GetAxis("Mouse X") * camera_rotate_speed;
             float mouse_y = Input.GetAxis("Mouse Y") * camera_rotate_speed;
@@ -62,6 +66,7 @@ public class ViewControl : MonoBehaviour
             transform.rotation = Quaternion.Euler(camera_rotate_X, camera_rotate_Y, 0);
         }
 
+        // 键盘控制移动
         if (Input.GetKey(KeyCode.W)) {
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }

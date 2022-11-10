@@ -12,7 +12,7 @@ public class MyMath : MonoBehaviour
 
     public const float PRECISION = 0.000001f; // 1e-6
 
-    private void Awake() {
+    void Awake() {
         instance = this;
     }
 
@@ -27,6 +27,7 @@ public class MyMath : MonoBehaviour
         return new Vector3(SinPhi*CosTheta, CosPhi, SinPhi*SinTheta);
     }
 
+    /** 角度转弧度 */
     public float DegreeToRadian(float degree) {
         return degree * Mathf.PI / 180f;
     }
