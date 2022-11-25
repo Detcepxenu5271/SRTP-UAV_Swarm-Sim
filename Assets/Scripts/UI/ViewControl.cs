@@ -68,22 +68,22 @@ public class ViewControl : MonoBehaviour
 
         // 键盘控制移动
         if (Input.GetKey(KeyCode.W)) {
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+            transform.Translate(Vector3.forward * speed * Time.unscaledDeltaTime);
         }
         if (Input.GetKey(KeyCode.S)) {
-            transform.Translate(Vector3.back * speed * Time.deltaTime);
+            transform.Translate(Vector3.back * speed * Time.unscaledDeltaTime);
         }
         if (Input.GetKey(KeyCode.A)) {
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
+            transform.Translate(Vector3.left * speed * Time.unscaledDeltaTime);
         }
         if (Input.GetKey(KeyCode.D)) {
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            transform.Translate(Vector3.right * speed * Time.unscaledDeltaTime);
         }
         if (Input.GetKey(KeyCode.E)) {
-            transform.Translate(Vector3.up * speed * Time.deltaTime);
+            transform.Translate(Vector3.up * speed * Time.unscaledDeltaTime);
         }
         if (Input.GetKey(KeyCode.Q)) {
-            transform.Translate(Vector3.down * speed * Time.deltaTime);
+            transform.Translate(Vector3.down * speed * Time.unscaledDeltaTime);
         }
     }
 }

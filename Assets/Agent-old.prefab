@@ -74,16 +74,16 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 1
+  m_Time: 5
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.003
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.1048408
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -92,7 +92,7 @@ TrailRenderer:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 1
+        value: 0
         inSlope: -0.026101949
         outSlope: -0.026101949
         tangentMode: 0
@@ -149,11 +149,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2682969981169106905}
-  - component: {fileID: 7921338469380288867}
-  - component: {fileID: 8384142487961012975}
-  - component: {fileID: 8101680953325103584}
+  - component: {fileID: 1409244358213139031}
   m_Layer: 0
-  m_Name: Agent
+  m_Name: Agent-old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,45 +165,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7100311227022588300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.0451, z: -0.0225}
+  m_LocalPosition: {x: 0, y: 0, z: 0.013}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5881955171274772681}
   - {fileID: 8118762511093624830}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &7921338469380288867
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7100311227022588300}
-  serializedVersion: 2
-  m_Mass: 0.001
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!135 &8384142487961012975
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7100311227022588300}
-  m_Material: {fileID: 13400000, guid: d87adef6bf2a35b4ba7aa415b4ca30da, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.01
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8101680953325103584
+--- !u!114 &1409244358213139031
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,6 +186,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56551e92b24c9044b9c244d2b14113b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  view_angle: 135
+  view_distance: 30
+  max_accelerate: 10
+  air_drag_factor: 0.1
+  accelerate: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1001 &6208878858631362338
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -230,15 +205,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ff76c4bc3804a9b439c4595f8177e497, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.005
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ff76c4bc3804a9b439c4595f8177e497, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.005
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ff76c4bc3804a9b439c4595f8177e497, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.005
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ff76c4bc3804a9b439c4595f8177e497, type: 3}
       propertyPath: m_LocalPosition.x
