@@ -100,6 +100,7 @@ public class SimManager : MonoBehaviour
 
     public void SimStart() {
         isStop = false; // 为了保证 Pause 里的操作能执行
+        Time.timeScale = 1.0f;
         Pause();
         playSpeed = PlaySpeedType.X1;
 
@@ -112,6 +113,7 @@ public class SimManager : MonoBehaviour
     }
     /** （未结束时）终止仿真 */
     public void SimTerminate() {
+        Pause();
         agentManager.DestoryAllAgent();
     }
     
