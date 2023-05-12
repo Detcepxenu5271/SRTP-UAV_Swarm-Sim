@@ -18,14 +18,19 @@ public class SimManager : MonoBehaviour
         get { return isStop; }
     }
 
+    private float timeScaleSaved;
+
     public void Play() {
         if (isStop) {
             isStop = false;
+            Time.timeScale = timeScaleSaved;
         }
     }
     public void Pause() {
         if (!isStop) {
             isStop = true;
+            timeScaleSaved = Time.timeScale;
+            Time.timeScale = 0f;
         }
     }
 
@@ -78,6 +83,11 @@ public class SimManager : MonoBehaviour
         simTime = (float)Math.Round(float.Parse(value), 2); // 保留两位小数
     }
 
+    private float airDragCof = 0.02f; // 空气阻力系数，包括 C（空气阻力系数）、ρ（空气密度）和 S（物体迎风面积）
+    public float AirDragCof {
+        get { return airDragCof; }
+    }
+
     #endregion // 仿真参数
 
     public Tuple<float, List<float>> GetMetricsOrder() {
@@ -89,21 +99,25 @@ public class SimManager : MonoBehaviour
     private float timeCounter;
 
     public void SimStart() {
-        isStop = true;
+        isStop = false; // 为了保证 Pause 里的操作能执行
+        Pause();
         playSpeed = PlaySpeedType.X1;
 
         timeCounter = 0.0f;
+
+        // TODO model 和 data 有区别
+        agentManager.SpawnAgents(simCount);
 
         metrics.StartCalcMetrics();
     }
     /** （未结束时）终止仿真 */
     public void SimTerminate() {
-        // TODO (可能) AgentManager 清空所有 Agent
+        agentManager.DestoryAllAgent();
     }
     
     /** （ShowResult 完成后）结束整个仿真过程 */
     public void ShowResultEnd() {
-        // TODO (可能) AgentManager 清空所有 Agent
+        agentManager.DestoryAllAgent();
     }
 
     #endregion // 流程控制
@@ -116,7 +130,7 @@ public class SimManager : MonoBehaviour
 
     void FixedUpdate() {
         if (!isStop) {
-            // TODO agentManager.MoveAllAgents();
+            // TODO ? agentManager.MoveAllAgents();
             metrics.CalcMetrics(Time.fixedDeltaTime);
 
             timeCounter += Time.fixedDeltaTime;

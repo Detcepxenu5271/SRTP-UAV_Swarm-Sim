@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1949851954637687824}
   - component: {fileID: 1949851954637687827}
   m_Layer: 0
-  m_Name: Viseck
+  m_Name: Vicesk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

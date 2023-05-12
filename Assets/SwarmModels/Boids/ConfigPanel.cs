@@ -16,10 +16,10 @@ public class ConfigPanel : MonoBehaviour, IConfigPanel
     private GameObject noiseValue;
 
     public void SetInitValue() {
-        cohensionValue.GetComponent<TMP_InputField>().text = model.CohensionFactor.ToString("F2");
-        separationValue.GetComponent<TMP_InputField>().text = model.SeparationFactor.ToString("F2");
-        alignmentValue.GetComponent<TMP_InputField>().text = model.AlignmentFactor.ToString("F2");
-        noiseValue.GetComponent<TMP_InputField>().text = model.NoiseFactor.ToString("F2");
+        cohensionValue.GetComponent<TMP_InputField>().text = model.CohensionFactor.ToString("F6");
+        separationValue.GetComponent<TMP_InputField>().text = model.SeparationFactor.ToString("F6");
+        alignmentValue.GetComponent<TMP_InputField>().text = model.AlignmentFactor.ToString("F6");
+        noiseValue.GetComponent<TMP_InputField>().text = model.NoiseFactor.ToString("F6");
     }
     
     void Awake() {

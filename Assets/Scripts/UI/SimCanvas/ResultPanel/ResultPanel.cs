@@ -10,10 +10,13 @@ public class ResultPanel : MonoBehaviour
      * deltaTime: 计算 Metrics 的时间间隔
      * orderList: 每隔时间间隔所计算出的 Order */
     public void SetOrderChart(float deltaTime, List<float> orderList) {
+        if (metricsPanel == null) {
+            Awake();
+        }
         metricsPanel.SetOrderChart(deltaTime, orderList);
     }
 
     void Awake() {
-        metricsPanel = GetComponentInChildren<MetricsPanel>(); // XXX 改成和其他panel一样的获取方式
+        if (metricsPanel == null) metricsPanel = GetComponentInChildren<MetricsPanel>(); // XXX 改成和其他panel一样的获取方式
     }
 }

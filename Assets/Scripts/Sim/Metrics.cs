@@ -19,10 +19,14 @@ public class Metrics : MonoBehaviour
     }
 
     private void CalcOrder() {
-        // TODO 从 AgentManager 中获取所有 Agent 的速度，计算 Order
-        // TEST
-        Debug.Log("Calc Order, " + orderList.Count);
-        orderList.Add(orderList.Count * 0.1f);
+        // 从 AgentManager 中获取所有 Agent 的速度，计算 Order
+        List<Vector3> velList = agentManager.GetVelList();
+        Vector3 aveVel = Vector3.zero;
+        foreach (Vector3 vel in velList) {
+            aveVel += vel;
+        }
+        aveVel /= velList.Count;
+        orderList.Add(aveVel.magnitude);
     }
     
     private float timeCounter;
