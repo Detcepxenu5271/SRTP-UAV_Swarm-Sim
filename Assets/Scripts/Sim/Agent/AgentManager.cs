@@ -163,7 +163,6 @@ public class AgentManager : MonoBehaviour
     }
 
     void FixedUpdate() {
-        Debug.Log("FixedUpdate: " + simManager.IsStop);
         if (!simManager.IsStop) {
             swarmModelManager.CallModelForAgents(agentList);
         }

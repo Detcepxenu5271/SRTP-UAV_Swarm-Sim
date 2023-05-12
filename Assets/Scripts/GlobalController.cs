@@ -6,6 +6,7 @@ public class GlobalController : MonoBehaviour
 {
     public UIManager uiManager; // [手动绑定]
     public SimManager simManager; // [手动绑定]
+    public DataManager dataManager; // [手动绑定]
     
     public enum StateType {
         InitConfig,
@@ -44,7 +45,9 @@ public class GlobalController : MonoBehaviour
     public void EnterSimulate(bool isSimData) {
         state = StateType.Simulate;
 
-        if (isSimData) simMode = -1;
+        if (isSimData) {
+            simMode = -1;
+        }
 
         uiManager.SwitchToSim();
         simManager.SimStart();

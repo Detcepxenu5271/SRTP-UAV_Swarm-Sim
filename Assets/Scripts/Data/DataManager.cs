@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class DataManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private string dataFileName;
+    public string DataFileName {
+        get { return dataFileName; }
+        set { dataFileName = value; }
     }
 }
