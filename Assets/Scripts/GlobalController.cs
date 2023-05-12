@@ -5,17 +5,19 @@ using UnityEngine;
 public class GlobalController : MonoBehaviour
 {
     public UIManager uiManager; // [手动绑定]
+    public SimManager simManager; // [手动绑定]
     
-    enum State {
+    public enum StateType {
         InitConfig,
-        Simulating,
-        Simulated,
-        Analyzing,
-        Analyzed,
+        Simulate,
+        ShowResult,
         Error
     }
 
-    private State state;
+    private StateType state;
+    public StateType State {
+        get { return state; }
+    }
 
     /** 仿真模式
      * -1 表示导入数据仿真
@@ -33,18 +35,38 @@ public class GlobalController : MonoBehaviour
     }
 
     public void EnterInitConfig() {
-        state = State.InitConfig;
+        state = StateType.InitConfig;
 
         simMode = 0;
         
         uiManager.SwitchToInitConfig();
     }
-    public void EnterSimulaing(bool isSimData) {
-        state = State.Simulating;
+    public void EnterSimulate(bool isSimData) {
+        state = StateType.Simulate;
 
         if (isSimData) simMode = -1;
 
         uiManager.SwitchToSim();
+        simManager.SimStart();
+    }
+    public void ExitSimulating2ShowResult() {
+        EnterShowResult();
+    }
+    public void ExitSimulating2InitConfig() {
+        simManager.SimTerminate();
+        EnterInitConfig();
+    }
+    public void EnterShowResult() {
+        state = StateType.ShowResult;
+
+        uiManager.ShowResultPanel();
+        uiManager.SetMetrics2ResultPanel(simManager.GetMetricsOrder());
+    }
+    public void ExitShowResult() {
+        uiManager.HideResultPanel();
+        simManager.ShowResultEnd();
+        
+        EnterInitConfig();
     }
     
     public void Quit() {

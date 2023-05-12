@@ -16,4 +16,8 @@ public class PlayOrPauseButton : MonoBehaviour
             gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icons/Play-100x100");
         }
     }
+
+    void OnEnable() {
+        gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Icons/Play-100x100");
+    }
 }

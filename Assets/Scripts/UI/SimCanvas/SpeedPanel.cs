@@ -25,6 +25,10 @@ public class SpeedPanel : MonoBehaviour
         }
     }
 
+    void OnEnable() {
+        MultiplierText.GetComponent<TextMeshProUGUI>().text = "X1.0";
+    }
+
     void Awake() {
         MultiplierText = transform.Find("TX-Multiplier").gameObject;
     }

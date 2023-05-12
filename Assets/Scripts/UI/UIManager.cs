@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,6 @@ public class UIManager : MonoBehaviour
     //     return initConfigCanvas.GetComponent<InitConfigCanvas>().IsSimData();
     // }
 
-    private ModelConfigPanel modelConfigPanel;
-
     public void SwitchToInitConfig() {
         simCanvas.SetActive(false);
         initConfigCanvas.SetActive(true);
@@ -30,9 +29,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowResultPanel() {
+        if (globalController.State == GlobalController.StateType.ShowResult) {
+            simCanvas.GetComponent<SimCanvas>().ShowResultPanel();
+        }
+    }
+    public void HideResultPanel() {
+        if (globalController.State == GlobalController.StateType.ShowResult) {
+            simCanvas.GetComponent<SimCanvas>().HideResultPanel();
+        }
+    }
+
+    /** 把 Metrics 结果显示在 ResultPanel 上
+     * deltaTime: 计算 Metrics 的时间间隔
+     * orderList: 每隔时间间隔所计算出的 Order */
+    public void SetMetrics2ResultPanel(Tuple<float, List<float>> tp) {
+        if (globalController.State == GlobalController.StateType.ShowResult) {
+            simCanvas.GetComponent<SimCanvas>().SetMetrics2ResultPanel(tp.Item1, tp.Item2);
+        }
+    }
+
     void Awake() {
         initConfigCanvas = transform.Find("CV-InitConfig").gameObject;
         simCanvas = transform.Find("CV-Sim").gameObject;
-        modelConfigPanel = simCanvas.transform.Find("PN-SimConfig").Find("PN-ModelConfig").GetComponent<ModelConfigPanel>();
     }
 }

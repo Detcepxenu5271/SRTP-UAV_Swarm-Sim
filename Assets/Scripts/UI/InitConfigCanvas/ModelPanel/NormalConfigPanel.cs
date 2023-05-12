@@ -5,7 +5,7 @@ using TMPro;
 
 public class NormalConfigPanel : MonoBehaviour, IConfigPanel
 {
-    public AgentManager agentManager; // [手动绑定]
+    public SimManager simManager; // [手动绑定]
     
     private GameObject simCountValue;
     private GameObject simTimeValue;
@@ -15,8 +15,8 @@ public class NormalConfigPanel : MonoBehaviour, IConfigPanel
             Debug.Log("NormalConfigPanel: simCountValue or simTimeValue is null");
             Awake();
         }
-        simCountValue.GetComponent<TMP_InputField>().text = agentManager.SimCount.ToString();
-        simTimeValue.GetComponent<TMP_InputField>().text = agentManager.SimTime.ToString("F2");
+        simCountValue.GetComponent<TMP_InputField>().text = simManager.SimCount.ToString();
+        simTimeValue.GetComponent<TMP_InputField>().text = simManager.SimTime.ToString("F2");
     }
 
     void Awake() {
