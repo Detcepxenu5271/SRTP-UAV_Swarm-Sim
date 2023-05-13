@@ -12,6 +12,7 @@ public class AgentManager : MonoBehaviour
     public GameObject agentsHolder; // [手动绑定]
     public Box box; // [手动绑定]
     public SwarmModelManager swarmModelManager; // [手动绑定]
+    public DataManager dataManager; // [手动绑定]
     
     private SimManager simManager;
     
@@ -37,6 +38,13 @@ public class AgentManager : MonoBehaviour
     private int spawnCnt; // 已经生成的 agent 数目
     public int SpawnCnt {get => spawnCnt;}
 
+    public List<Vector3> GetPosList() {
+        List<Vector3> posList = new List<Vector3>();
+        foreach (Agent agent in agentList) {
+            posList.Add(agent.Position);
+        }
+        return posList;
+    }
     public List<Vector3> GetVelList() {
         List<Vector3> velList = new List<Vector3>();
         foreach (Agent agent in agentList) {
@@ -69,8 +77,10 @@ public class AgentManager : MonoBehaviour
         agent.agentManager = this;
         agent.box = box;
 
+        agent.SetStatic(simManager.SimMode == -1);
+
         // 设置随机随机坐标
-        agent.SetPosition(box.BoxRandomPosition(colliderRadius));
+        agent.SetStaticPosition(box.BoxRandomPosition(colliderRadius));
 
         // 如果全局设置为不显示拖尾，则取消初始化的拖尾显示
         if (!showTrail) {
@@ -91,8 +101,10 @@ public class AgentManager : MonoBehaviour
         agent.agentManager = this;
         agent.box = box;
 
+        agent.SetStatic(simManager.SimMode == -1);
+
         // 设置随机随机坐标
-        agent.SetPosition(pos);
+        agent.SetStaticPosition(pos);
 
         // 如果全局设置为不显示拖尾，则取消初始化的拖尾显示
         if (!showTrail) {
@@ -162,9 +174,19 @@ public class AgentManager : MonoBehaviour
         agentList = new List<Agent>();
     }
 
-    void FixedUpdate() {
+    public void CalledFixedUpdate() {
         if (!simManager.IsStop) {
-            swarmModelManager.CallModelForAgents(agentList);
+            if (simManager.SimMode == -1) {
+                List<Vector3> posList = dataManager.GetPosList(simManager.StepCounter);
+                List<Vector3> velList = dataManager.GetVelList(simManager.StepCounter);
+                for (int i = 0; i < SimCount; ++i) {
+                    agentList[i].CalledFixedUpdate(posList[i], velList[i]);
+                }
+            } else {
+                swarmModelManager.CallModelForAgents(agentList);
+
+                dataManager.AddData(GetPosList(), GetVelList());
+            }
         }
     }
 }

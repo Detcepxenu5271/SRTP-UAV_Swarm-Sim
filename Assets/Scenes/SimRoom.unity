@@ -7106,6 +7106,7 @@ MonoBehaviour:
   globalController: {fileID: 1329463255}
   metrics: {fileID: 1814383987}
   timePanel: {fileID: 653639773}
+  dataManager: {fileID: 2096239162}
 --- !u!1 &763339194
 GameObject:
   m_ObjectHideFlags: 0
@@ -7519,6 +7520,7 @@ MonoBehaviour:
   agentsHolder: {fileID: 1613218058}
   box: {fileID: 5571814039423936477}
   swarmModelManager: {fileID: 1012481989}
+  dataManager: {fileID: 2096239162}
 --- !u!1 &783389808
 GameObject:
   m_ObjectHideFlags: 0
@@ -18879,6 +18881,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6805c58af5d75645b1bd77d047edcbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jsonFile: {fileID: 2096239163}
 --- !u!114 &2096239163
 MonoBehaviour:
   m_ObjectHideFlags: 0

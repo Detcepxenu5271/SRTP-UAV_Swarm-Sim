@@ -49,6 +49,8 @@ public class GlobalController : MonoBehaviour
             simMode = -1;
         }
 
+        dataManager.InitData();
+        dataManager.ReadData();
         uiManager.SwitchToSim();
         simManager.SimStart();
     }

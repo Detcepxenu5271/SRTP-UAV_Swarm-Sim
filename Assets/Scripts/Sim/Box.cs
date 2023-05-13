@@ -63,24 +63,24 @@ public class Box : MonoBehaviour
         float y = agent.Position.y;
         float z = agent.Position.z;
         if (x > boxboundEast) {
-            agent.SetRigidbodyPosition(new Vector3(boxboundWest + (x - boxboundEast), y, z));
+            agent.SetPosition(new Vector3(boxboundWest + (x - boxboundEast), y, z));
         } else
         if (x < boxboundWest) {
-            agent.SetRigidbodyPosition(new Vector3(boxboundEast + (x - boxboundWest), y, z));
+            agent.SetPosition(new Vector3(boxboundEast + (x - boxboundWest), y, z));
         }
 
         if (y > boxboundUp) {
-            agent.SetRigidbodyPosition(new Vector3(x, boxboundDown + (y - boxboundUp), z));
+            agent.SetPosition(new Vector3(x, boxboundDown + (y - boxboundUp), z));
         } else
         if (y < boxboundDown) {
-            agent.SetRigidbodyPosition(new Vector3(x, boxboundUp + (y - boxboundDown), z));
+            agent.SetPosition(new Vector3(x, boxboundUp + (y - boxboundDown), z));
         }
 
         if (z > boxboundNorth) {
-            agent.SetRigidbodyPosition(new Vector3(x, y, boxboundSouth + (z - boxboundNorth)));
+            agent.SetPosition(new Vector3(x, y, boxboundSouth + (z - boxboundNorth)));
         } else
         if (z < boxboundSouth) {
-            agent.SetRigidbodyPosition(new Vector3(x, z, boxboundNorth + (z - boxboundSouth)));
+            agent.SetPosition(new Vector3(x, z, boxboundNorth + (z - boxboundSouth)));
         }
     }
 }

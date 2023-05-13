@@ -8,8 +8,13 @@ public class SimManager : MonoBehaviour
     public GlobalController globalController; // [手动绑定]
     public Metrics metrics; // [手动绑定]
     public TimePanel timePanel; // XXX [手动绑定] 这里把 UI 组件放在非 UI 类里了，混乱
+    public DataManager dataManager; // [手动绑定]
     
     private AgentManager agentManager;
+
+    public int SimMode {
+        get { return globalController.SimMode; }
+    }
     
     #region 流程控制参数
     
@@ -96,7 +101,16 @@ public class SimManager : MonoBehaviour
 
     #region 流程控制
 
+    private int simStep;
+    public int SimStep {
+        get { return simStep; }
+    }
+
     private float timeCounter;
+    private int stepCounter;
+    public int StepCounter {
+        get { return stepCounter; }
+    }
 
     public void SimStart() {
         isStop = false; // 为了保证 Pause 里的操作能执行
@@ -105,9 +119,16 @@ public class SimManager : MonoBehaviour
         playSpeed = PlaySpeedType.X1;
 
         timeCounter = 0.0f;
+        stepCounter = 0;
 
-        // TODO model 和 data 有区别
-        agentManager.SpawnAgents(simCount);
+        // model 和 data 有区别
+        if (SimMode == -1) {
+            simCount = dataManager.AgentCount;
+            simStep = dataManager.DataCount;
+            agentManager.SpawnAgents(dataManager.GetPosList(0));
+        } else {
+            agentManager.SpawnAgents(simCount);
+        }
 
         metrics.StartCalcMetrics();
     }
@@ -120,6 +141,8 @@ public class SimManager : MonoBehaviour
     /** （ShowResult 完成后）结束整个仿真过程 */
     public void ShowResultEnd() {
         agentManager.DestoryAllAgent();
+
+        dataManager.WriteData();
     }
 
     #endregion // 流程控制
@@ -132,14 +155,22 @@ public class SimManager : MonoBehaviour
 
     void FixedUpdate() {
         if (!isStop) {
-            // TODO ? agentManager.MoveAllAgents();
+            agentManager.CalledFixedUpdate();
             metrics.CalcMetrics(Time.fixedDeltaTime);
 
             timeCounter += Time.fixedDeltaTime;
             timePanel.SetTimeValue(timeCounter);
-            if (timeCounter >= simTime) {
-                isStop = true;
-                globalController.ExitSimulating2ShowResult();
+            stepCounter++;
+            if (SimMode == -1) {
+                if (stepCounter >= simStep) {
+                    Pause();
+                    globalController.ExitSimulating2ShowResult();
+                }
+            } else {
+                if (timeCounter >= simTime) {
+                    Pause();
+                    globalController.ExitSimulating2ShowResult();
+                }
             }
         }
     }

@@ -17,26 +17,51 @@ public class Agent : MonoBehaviour
 
     // ################ 参数和函数：物理 ################
 
+    private bool isStatic;
+    public bool IsStatic {
+        get { return isStatic; }
+        set { isStatic = value; }
+    }
+    public void SetStatic(bool isSet) {
+        if (isSet) {
+            isStatic = true;
+            rb.isKinematic = true;
+            rb.velocity = Vector3.zero;
+        } else {
+            isStatic = false;
+        }
+    }
+
     public float Mass {get => rb.mass;}
-    public Vector3 Position {get => rb.position;}
-    public Vector3 Velocity {get => rb.velocity;}
+    public Vector3 Position {
+        get => isStatic ? transform.position : rb.position;
+    }
+    public Vector3 Velocity {
+        get => isStatic ? staticVelocity : rb.velocity;
+    }
     public float ColliderRadius {get => sphere_collider.radius;}
+
+    private Vector3 staticVelocity;
 
     /** 直接设置 agent 的位置
      * 只能在初始化的时候调用一次（否则由于使用 rigidbody，直接修改 transform 可能会出问题 */
-    public void SetPosition(Vector3 pos) {
+    public void SetStaticPosition(Vector3 pos) {
         // rb.position = pos;
         transform.position = pos;
     }
 
-    public void SetRigidbodyPosition(Vector3 pos) {
+    public void SetPosition(Vector3 pos) {
         rb.position = pos;
     }
 
+    public void SetStaticVelocity(Vector3 vel) {
+        staticVelocity = vel;
+    }
+
     /** 直接设置 agent 的速度 */
-    /*public void SetVelocity(Vector3 vel) {
+    public void SetVelocity(Vector3 vel) {
         rb.velocity = vel;
-    }*/
+    }
 
     /** 计算主动指向力
      * 包括模型传来的指向力（根据集群中的其他个体计算）
@@ -127,6 +152,16 @@ public class Agent : MonoBehaviour
     public void CalledFixedUpdate(Vector3 vel) {
         if (!simManager.IsStop) {
             rb.AddForce(ResultantVel(vel), ForceMode.VelocityChange); // 改变速度
+
+            transform.LookAt(Velocity.normalized); // 朝向速度方向
+        }
+    }
+    /** 由其他（AgentManager 中的）FixedUpdate 函数调用
+     * “导入数据”类型 */
+    public void CalledFixedUpdate(Vector3 pos, Vector3 vel) {
+        if (!simManager.IsStop) {
+            SetStaticPosition(pos);
+            SetStaticVelocity(vel);
 
             transform.LookAt(Velocity.normalized); // 朝向速度方向
         }
